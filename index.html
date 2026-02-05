@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Vexora Chat Enhanced</title>
+<title>Vexora Chat</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
@@ -30,7 +30,13 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,#667
 .auth-tab{padding:10px 30px;background:#f3f4f6;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:.3s;color:#6b7280}
 .auth-tab.active{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff}
 .auth-form{width:100%;max-width:400px;display:flex;flex-direction:column;gap:15px}
-.auth-form input,.auth-form textarea{width:100%;padding:15px 20px;border:2px solid #e5e7eb;border-radius:10px;font-size:16px;transition:.3s}
+.password-field{position:relative;width:100%}
+.password-field input{width:100%;padding:15px 50px 15px 20px;border:2px solid #e5e7eb;border-radius:10px;font-size:16px;transition:.3s}
+.password-field input:focus{outline:none;border-color:#667eea}
+.password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:transparent !important;border:none;cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;border-radius:6px;width:28px;height:28px}
+.password-toggle svg{width:16px;height:16px;transition:opacity .2s;stroke:#000 !important;fill:none !important}
+.password-toggle:active svg{opacity:.7}
+.auth-form input:not(.password-field input),.auth-form textarea{width:100%;padding:15px 20px;border:2px solid #e5e7eb;border-radius:10px;font-size:16px;transition:.3s}
 .auth-form input:focus,.auth-form textarea:focus{outline:none;border-color:#667eea}
 .auth-form textarea{resize:vertical;min-height:80px;font-family:inherit}
 .auth-form button{padding:15px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .2s}
@@ -194,13 +200,29 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,#667
 </div>
 <div class="auth-form" id="loginForm">
 <input type="text" id="loginUsername" placeholder="Username"/>
+<div class="password-field">
 <input type="password" id="loginPassword" placeholder="Password"/>
+<button type="button" class="password-toggle" id="loginPasswordToggle">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</button>
+</div>
 <div id="loginError"></div>
 <button id="loginBtn">Login</button>
 </div>
 <div class="auth-form" id="registerForm" style="display:none">
 <input type="text" id="regUsername" placeholder="Username"/>
+<div class="password-field">
 <input type="password" id="regPassword" placeholder="Password"/>
+<button type="button" class="password-toggle" id="regPasswordToggle">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</button>
+</div>
 <input type="text" id="regDisplayName" placeholder="Display Name"/>
 <textarea id="regBio" placeholder="Bio (optional)"></textarea>
 <div id="registerError"></div>
@@ -272,7 +294,7 @@ const COLOR_PALETTE=['#2b0000','#4a0000','#6b0000','#8b0000','#b30000','#d40000'
 
 const REACTION_EMOJIS=['👍','❤️','😂','😮','😢','🙏','🔥','🎉','👏','✨'];
 
-let currentUser=null,allProfiles={},allMessages=[],systemMessages=[],onlineUsers={},typingUsers=[],pollInterval,typingTimeout,onlineInterval,selectedColor=COLOR_PALETTE[0],selectedImage=null,avatarMode='color',messageToDelete=null,systemMessageToDelete=null,lastMessageHash='',lastSystemHash='',replyingTo=null,userWasAtBottom=true;
+let currentUser=null,allProfiles={},allMessages=[],systemMessages=[],onlineUsers={},typingUsers=[],pollInterval,typingTimeout,onlineInterval,selectedColor=COLOR_PALETTE[0],selectedImage=null,avatarMode='color',messageToDelete=null,systemMessageToDelete=null,lastMessageHash='',lastSystemHash='',replyingTo=null,userWasAtBottom=true,membersLoaded=false;
 
 function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
 function showError(id,msg){const el=document.getElementById(id);if(el){el.innerHTML=`<div class="error">${msg}</div>`;setTimeout(()=>el.innerHTML='',5000)}}
@@ -283,8 +305,43 @@ function hashSystemMessages(m){return JSON.stringify(m)}
 function isAtBottom(){return document.getElementById('messages').scrollHeight-document.getElementById('messages').scrollTop<=document.getElementById('messages').clientHeight+100}
 function scrollToBottom(force){if(force||userWasAtBottom){document.getElementById('messages').scrollTop=document.getElementById('messages').scrollHeight;document.getElementById('newMessagesIndicator').classList.remove('show')}}
 
+// Password toggle functionality
+function setupPasswordToggle(toggleId, inputId) {
+  const toggle = document.getElementById(toggleId);
+  const input = document.getElementById(inputId);
+  
+  toggle.onclick = () => {
+    if (input.type === 'password') {
+      input.type = 'text';
+      toggle.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+      </svg>`;
+    } else {
+      input.type = 'password';
+      toggle.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>`;
+    }
+  };
+}
+
+setupPasswordToggle('loginPasswordToggle', 'loginPassword');
+setupPasswordToggle('regPasswordToggle', 'regPassword');
+
 document.getElementById('loginTab').onclick=()=>{document.getElementById('loginTab').classList.add('active');document.getElementById('registerTab').classList.remove('active');document.getElementById('loginForm').style.display='flex';document.getElementById('registerForm').style.display='none'};
 document.getElementById('registerTab').onclick=()=>{document.getElementById('registerTab').classList.add('active');document.getElementById('loginTab').classList.remove('active');document.getElementById('registerForm').style.display='flex';document.getElementById('loginForm').style.display='none'};
+
+// Enter key support for login form
+document.getElementById('loginUsername').onkeypress = e => {if(e.key==='Enter')document.getElementById('loginBtn').click()};
+document.getElementById('loginPassword').onkeypress = e => {if(e.key==='Enter')document.getElementById('loginBtn').click()};
+
+// Enter key support for register form
+document.getElementById('regUsername').onkeypress = e => {if(e.key==='Enter')document.getElementById('registerBtn').click()};
+document.getElementById('regPassword').onkeypress = e => {if(e.key==='Enter')document.getElementById('registerBtn').click()};
+document.getElementById('regDisplayName').onkeypress = e => {if(e.key==='Enter')document.getElementById('registerBtn').click()};
+document.getElementById('regBio').onkeypress = e => {if(e.key==='Enter' && !e.shiftKey){e.preventDefault();document.getElementById('registerBtn').click()}};
 
 document.getElementById('loginBtn').onclick=async()=>{
   const u=document.getElementById('loginUsername').value.trim(),p=document.getElementById('loginPassword').value.trim();
@@ -336,7 +393,7 @@ function updateHeader(){
 }
 
 document.getElementById('signOutBtn').onclick=()=>{
-  currentUser=null;allMessages=[];systemMessages=[];lastMessageHash='';lastSystemHash='';
+  currentUser=null;allMessages=[];systemMessages=[];lastMessageHash='';lastSystemHash='';membersLoaded=false;
   document.getElementById('chatScreen').classList.remove('active');
   document.getElementById('authScreen').style.display='flex';
   document.getElementById('headerRight').style.display='none';
@@ -578,7 +635,11 @@ async function executeSystemDelete(msgData){
 }
 
 async function showMembersModal(){
-  showLoading('Loading members...');
+  // Only show loading if members haven't been loaded yet
+  if(!membersLoaded){
+    showLoading('Loading members...');
+  }
+  
   document.getElementById('membersModal').classList.add('active');
   await Promise.all([loadAllProfiles(),loadOnlineUsers()]);
   const members=Object.values(allProfiles);
@@ -590,6 +651,8 @@ async function showMembersModal(){
     const canMod=currentUser.username==='zor'&&user.username!=='zor',modActions=canMod?`<div class="member-actions">${!user.isMod?`<button class="mod-action-btn promote" onclick="promoteModerator('${user.username}')">Promote to Mod</button>`:`<button class="mod-action-btn demote" onclick="demoteModerator('${user.username}')">Demote</button>`}</div>`:'';
     return`<div class="member-item"><div class="member-avatar" style="${avatarStyle}" onclick="showUserProfile('${escapeHtml(user.username)}');document.getElementById('membersModal').classList.remove('active')">${avatarText}${onlineInd}</div><div class="member-info"><div class="member-name">${escapeHtml(user.displayName)}${badges}</div><div class="member-username">@${escapeHtml(user.username)}</div></div>${modActions}</div>`
   }).join('')}</div>`;
+  
+  membersLoaded = true;
   hideLoading()
 }
 
@@ -599,7 +662,7 @@ window.promoteModerator=async function(u){
   try{
     const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'promoteModerator',requestingUser:currentUser.username,targetUser:u})});
     const d=await r.json();
-    if(d.status==='success'){await loadAllProfiles();lastSystemHash='';await loadSystemMessages();await showMembersModal()}else alert('Failed: '+d.message)
+    if(d.status==='success'){await loadAllProfiles();lastSystemHash='';await loadSystemMessages();membersLoaded=false;await showMembersModal()}else alert('Failed: '+d.message)
   }catch(e){alert('Connection error')}
   hideLoading()
 };
@@ -610,7 +673,7 @@ window.demoteModerator=async function(u){
   try{
     const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'demoteModerator',requestingUser:currentUser.username,targetUser:u})});
     const d=await r.json();
-    if(d.status==='success'){await loadAllProfiles();lastSystemHash='';await loadSystemMessages();await showMembersModal()}else alert('Failed: '+d.message)
+    if(d.status==='success'){await loadAllProfiles();lastSystemHash='';await loadSystemMessages();membersLoaded=false;await showMembersModal()}else alert('Failed: '+d.message)
   }catch(e){alert('Connection error')}
   hideLoading()
 };
