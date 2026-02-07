@@ -217,10 +217,12 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 .image-preview-info{flex:1}
 .image-preview-name{font-size:14px;font-weight:600;color:#1f2937;margin-bottom:4px}
 .image-preview-size{font-size:12px;color:#6b7280}
-.image-caption-input{width:100%;padding:8px 12px;border:2px solid #e5e7eb;border-radius:8px;font-size:14px;margin-top:8px}
-.image-caption-input:focus{outline:none;border-color:var(--primary-color)}
 .remove-image-preview{background:#fee2e2;border:none;color:#ef4444;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px}
 .remove-image-preview:hover{background:#fecaca}
+.image-actions{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);border-radius:8px;padding:8px;display:flex;gap:8px;opacity:0;transition:opacity .2s}
+.message-content:hover .image-actions{opacity:1}
+.image-action-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.image-action-btn:hover{background:rgba(255,255,255,.3)}
 .input-row{display:flex;gap:10px}
 .attach-btn{background:#f3f4f6;border:2px solid #e5e7eb;color:#6b7280;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
 .attach-btn:hover{background:#e5e7eb;border-color:var(--primary-color);color:var(--primary-color)}
@@ -409,7 +411,6 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 <div class="image-preview-info">
 <div class="image-preview-name" id="imagePreviewName">Image selected</div>
 <div class="image-preview-size" id="imagePreviewSize"></div>
-<input type="text" id="imageCaptionInput" class="image-caption-input" placeholder="Add a caption (optional)"/>
 </div>
 <button class="remove-image-preview" id="removeImagePreview">✕</button>
 </div>
@@ -533,8 +534,7 @@ function handleImageSelect(e){
     document.getElementById('imagePreviewName').textContent=file.name;
     document.getElementById('imagePreviewSize').textContent=formatFileSize(file.size);
     document.getElementById('imagePreviewArea').classList.add('show');
-    document.getElementById('imageCaptionInput').value='';
-    document.getElementById('imageCaptionInput').focus();
+    document.getElementById('messageInput').focus();
   };
   reader.readAsDataURL(file);
 }
@@ -543,7 +543,6 @@ function clearImagePreview(){
   selectedImageFile=null;
   document.getElementById('imageInput').value='';
   document.getElementById('imagePreviewArea').classList.remove('show');
-  document.getElementById('imageCaptionInput').value='';
 }
 
 function formatFileSize(bytes){
@@ -555,6 +554,15 @@ function formatFileSize(bytes){
 window.showFullImage=function(src){
   document.getElementById('fullSizeImage').src=src;
   document.getElementById('imageModal').classList.add('active');
+};
+
+window.downloadImage=function(src,username,timestamp){
+  const link=document.createElement('a');
+  link.href=src;
+  link.download=`vexora-${username}-${new Date(timestamp).getTime()}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
@@ -806,7 +814,7 @@ async function sendMessage(){
 async function sendImageMessage(){
   if(!selectedImageFile)return;
   
-  const caption=document.getElementById('imageCaptionInput').value.trim();
+  const caption=document.getElementById('messageInput').value.trim();
   
   showLoading('Uploading image...');
   
@@ -902,7 +910,7 @@ function displayMessages(){
     let contentHtml='';
     
     if(parsed.type==='image'){
-      contentHtml=`<img src="${parsed.imageData}" class="message-image" onclick="showFullImage('${parsed.imageData}')" alt="Shared image"/>`;
+      contentHtml=`<div style="position:relative"><img src="${parsed.imageData}" class="message-image" onclick="showFullImage('${parsed.imageData}')" alt="Shared image"/><div class="image-actions"><button class="image-action-btn" onclick="event.stopPropagation();downloadImage('${parsed.imageData}','${escapeHtml(m.username)}','${timestampStr}')" title="Download"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button></div></div>`;
       if(parsed.caption){
         contentHtml+=`<div class="message-caption">${parseMentions(escapeHtml(parsed.caption))}</div>`;
       }
