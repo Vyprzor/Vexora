@@ -109,8 +109,8 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 .mod-badge,.owner-badge{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;margin-left:5px}
 .mod-badge{background:rgba(255,215,0,.3);color:#ffd700}
 .owner-badge{background:rgba(255,0,0,.3);color:#ff6b6b}
-.theme-btn,.members-btn,.sign-out-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:14px;transition:.3s}
-.theme-btn:hover,.members-btn:hover,.sign-out-btn:hover{background:rgba(255,255,255,.3)}
+.theme-btn,.members-btn,.admin-btn,.sign-out-btn{background:rgba(255,255,255,.2);border:none;color:#fff;padding:8px 16px;border-radius:20px;cursor:pointer;font-weight:600;font-size:14px;transition:.3s}
+.theme-btn:hover,.members-btn:hover,.admin-btn:hover,.sign-out-btn:hover{background:rgba(255,255,255,.3)}
 .theme-selector{position:absolute;top:60px;right:25px;background:#fff;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.2);padding:15px;display:none;z-index:100}
 .theme-selector.show{display:block}
 .theme-option{padding:10px 15px;margin:5px 0;border-radius:10px;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:10px;transition:.2s}
@@ -138,9 +138,11 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 .password-field{position:relative;width:100%}
 .password-field input{width:100%;padding:15px 50px 15px 20px;border:2px solid #e5e7eb;border-radius:10px;font-size:16px;transition:.3s}
 .password-field input:focus{outline:none;border-color:var(--primary-color)}
-.password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:transparent !important;border:none;cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;border-radius:6px;width:28px;height:28px}
-.password-toggle svg{width:16px;height:16px;transition:opacity .2s;stroke:#000 !important;fill:none !important}
-.password-toggle:active svg{opacity:.7}
+.password-toggle{position:absolute;right:15px;top:50%;transform:translateY(-50%);background:transparent !important;border:none !important;cursor:pointer;padding:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;outline:none !important}
+.password-toggle:hover{background:transparent !important}
+.password-toggle:focus{background:transparent !important;outline:none !important}
+.password-toggle:active{background:transparent !important}
+.password-toggle svg{width:20px;height:20px;stroke:#000 !important;fill:none !important;stroke-width:2;display:block}
 .auth-form input:not(.password-field input),.auth-form textarea{width:100%;padding:15px 20px;border:2px solid #e5e7eb;border-radius:10px;font-size:16px;transition:.3s}
 .auth-form input:focus,.auth-form textarea:focus{outline:none;border-color:var(--primary-color)}
 .auth-form textarea{resize:vertical;min-height:80px;font-family:inherit}
@@ -251,6 +253,10 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 .mod-action-btn{padding:6px 12px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
 .mod-action-btn.promote{background:#fef3c7;color:#d97706}
 .mod-action-btn.demote{background:#fee2e2;color:#dc2626}
+.mod-action-btn.ban{background:#fecaca;color:#dc2626}
+.mod-action-btn.unban{background:#d1fae5;color:#059669}
+.mod-action-btn.mute{background:#fef3c7;color:#d97706}
+.mod-action-btn.unmute{background:#dbeafe;color:#2563eb}
 .mod-action-btn:hover{transform:scale(1.05)}
 .profile-view{display:flex;flex-direction:column;align-items:center;gap:20px}
 .profile-avatar-large{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:50px;color:#fff;background-size:cover;background-position:center}
@@ -299,9 +305,50 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 .confirm-btn{padding:10px 20px;border:none;border-radius:8px;font-weight:600;cursor:pointer}
 .confirm-btn.cancel{background:#f3f4f6;color:#1f2937}
 .confirm-btn.delete{background:#ef4444;color:#fff}
+.admin-panel{max-width:900px;width:100%}
+.admin-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.admin-tab{padding:10px 20px;background:#f3f4f6;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:.3s;color:#6b7280;flex:1;min-width:120px}
+.admin-tab.active{background:linear-gradient(135deg,var(--primary-color) 0%,var(--bg-gradient-2) 100%);color:#fff}
+.admin-section{display:none}
+.admin-section.active{display:block}
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px}
+.stat-card{background:linear-gradient(135deg,var(--primary-color) 0%,var(--bg-gradient-2) 100%);color:#fff;padding:20px;border-radius:12px;text-align:center}
+.stat-value{font-size:32px;font-weight:700;margin-bottom:5px}
+.stat-label{font-size:14px;opacity:.9}
+.admin-user-list{display:flex;flex-direction:column;gap:10px}
+.admin-user-item{display:flex;align-items:center;gap:12px;padding:15px;background:#f9fafb;border-radius:10px;border:2px solid transparent;transition:.3s}
+.admin-user-item.banned{border-color:#ef4444;background:#fee2e2}
+.admin-user-item.muted{border-color:#f59e0b;background:#fef3c7}
+.admin-actions{display:flex;gap:6px;flex-wrap:wrap}
+.admin-action-btn{padding:8px 12px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.admin-action-btn.primary{background:linear-gradient(135deg,var(--primary-color) 0%,var(--bg-gradient-2) 100%);color:#fff}
+.admin-action-btn.danger{background:#fee2e2;color:#dc2626}
+.admin-action-btn.warning{background:#fef3c7;color:#d97706}
+.admin-action-btn.success{background:#d1fae5;color:#059669}
+.admin-action-btn.info{background:#dbeafe;color:#2563eb}
+.admin-action-btn:hover{transform:translateY(-2px)}
+.admin-search{width:100%;padding:12px 20px;border:2px solid #e5e7eb;border-radius:10px;font-size:15px;margin-bottom:15px}
+.admin-search:focus{outline:none;border-color:var(--primary-color)}
+.broadcast-section{background:#f9fafb;padding:20px;border-radius:10px;margin-bottom:20px}
+.broadcast-section textarea{width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:10px;font-size:15px;min-height:100px;margin-bottom:10px;font-family:inherit}
+.broadcast-section textarea:focus{outline:none;border-color:var(--primary-color)}
+.broadcast-btn{padding:12px 30px;background:linear-gradient(135deg,var(--primary-color) 0%,var(--bg-gradient-2) 100%);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;width:100%}
+.message-log{background:#f9fafb;padding:15px;border-radius:10px;max-height:400px;overflow-y:auto}
+.log-item{padding:10px;background:#fff;margin-bottom:8px;border-radius:8px;font-size:13px;border-left:3px solid var(--primary-color)}
+.log-time{color:#9ca3af;font-size:12px}
+.settings-grid{display:grid;gap:15px}
+.setting-item{background:#f9fafb;padding:15px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
+.setting-label{font-weight:600;color:#1f2937}
+.setting-description{font-size:13px;color:#6b7280;margin-top:3px}
+.toggle-switch{position:relative;width:50px;height:26px;background:#e5e7eb;border-radius:13px;cursor:pointer;transition:.3s}
+.toggle-switch.active{background:var(--primary-color)}
+.toggle-switch::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.3s}
+.toggle-switch.active::after{left:27px}
 </style>
 </head>
 <body data-theme="purple">
+    <!-- PART 2: Copy this content and append it after Part 1 -->
+
 <div class="container">
 <div class="header">
 <div class="header-left">
@@ -315,17 +362,18 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 <span class="user-name" id="headerName"></span>
 </div>
 <button class="members-btn" id="membersBtn">Members</button>
+<button class="admin-btn" id="adminBtn" style="display:none">⚙️ Admin</button>
 <button class="sign-out-btn" id="signOutBtn">Sign Out</button>
 </div>
 </div>
 <div class="theme-selector" id="themeSelector">
 <div class="theme-option active" data-theme="purple">
 <div class="theme-color purple"></div>
-<span>Purple </span>
+<span>Purple</span>
 </div>
 <div class="theme-option" data-theme="ocean">
 <div class="theme-color ocean"></div>
-<span> Blue</span>
+<span>Blue</span>
 </div>
 <div class="theme-option" data-theme="sunset">
 <div class="theme-color sunset"></div>
@@ -333,23 +381,23 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 </div>
 <div class="theme-option" data-theme="forest">
 <div class="theme-color forest"></div>
-<span> Green</span>
+<span>Green</span>
 </div>
 <div class="theme-option" data-theme="midnight">
 <div class="theme-color midnight"></div>
-<span> Dark</span>
+<span>Dark</span>
 </div>
 <div class="theme-option" data-theme="rose">
 <div class="theme-color rose"></div>
-<span> Gold</span>
+<span>Gold</span>
 </div>
 <div class="theme-option" data-theme="candy">
 <div class="theme-color candy"></div>
-<span> Pink</span>
+<span>Pink</span>
 </div>
 <div class="theme-option" data-theme="mint">
 <div class="theme-color mint"></div>
-<span> Mint</span>
+<span>Mint</span>
 </div>
 </div>
 <div class="auth-screen" id="authScreen">
@@ -364,7 +412,7 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 <div class="password-field">
 <input type="password" id="loginPassword" placeholder="Password"/>
 <button type="button" class="password-toggle" id="loginPasswordToggle">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<svg viewBox="0 0 24 24">
 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
 <circle cx="12" cy="12" r="3"></circle>
 </svg>
@@ -378,7 +426,7 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 <div class="password-field">
 <input type="password" id="regPassword" placeholder="Password"/>
 <button type="button" class="password-toggle" id="regPasswordToggle">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<svg viewBox="0 0 24 24">
 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
 <circle cx="12" cy="12" r="3"></circle>
 </svg>
@@ -455,6 +503,22 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 <div id="membersContent"></div>
 </div>
 </div>
+<div class="modal-overlay" id="adminModal">
+<div class="modal admin-panel">
+<div class="modal-header">
+<h3>Admin Panel</h3>
+<button class="modal-close" id="closeAdminModal">&times;</button>
+</div>
+<div class="admin-tabs">
+<button class="admin-tab active" data-tab="dashboard">📊 Dashboard</button>
+<button class="admin-tab" data-tab="users">👥 Users</button>
+<button class="admin-tab" data-tab="moderation">🛡️ Moderation</button>
+<button class="admin-tab" data-tab="broadcast">📢 Broadcast</button>
+<button class="admin-tab" data-tab="settings">⚙️ Settings</button>
+</div>
+<div id="adminContent"></div>
+</div>
+</div>
 <div class="loading-overlay" id="loadingOverlay">
 <div class="loading-content">
 <div class="loading-spinner"></div>
@@ -471,14 +535,27 @@ body{font-family:-apple-system,sans-serif;background:linear-gradient(135deg,var(
 </div>
 </div>
 </div>
+
+<!-- PART 3: JavaScript - FIRST HALF -->
+<!-- Copy this and append after Part 2 -->
+
 <script>
-const SHEET_URL='https://script.google.com/macros/s/AKfycbyfsGWzB6edZuqdKC6Rn6ktYBbhi-bV_nPFKDVWSWn5jW4SIY61OG1vJTZWareEzydV8w/exec';
+const SHEET_URL='https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
 
 const COLOR_PALETTE=['#2b0000','#4a0000','#6b0000','#8b0000','#b30000','#d40000','#ff0000','#ff2b2b','#ff5555','#ff7f7f','#ffaaaa','#ffd5d5','#331a00','#663300','#994d00','#cc6600','#ff8000','#ff9933','#ffb366','#ffcc99','#ffe6cc','#333300','#666600','#999900','#cccc00','#ffff00','#ffff33','#ffff66','#ffff99','#ffffcc','#263300','#4d6600','#739900','#99cc00','#bfff00','#ccff33','#d9ff66','#e6ff99','#f2ffcc','#003300','#006600','#009900','#00cc00','#00ff00','#33ff33','#66ff66','#99ff99','#ccffcc','#003326','#00664d','#009973','#00cc99','#00ffbf','#33ffd1','#66ffe0','#99ffef','#ccfffa','#003333','#006666','#009999','#00cccc','#00ffff','#33ffff','#66ffff','#99ffff','#ccffff','#002633','#004d66','#007399','#0099cc','#00bfff','#33ccff','#66d9ff','#99e6ff','#ccefff','#000033','#000066','#000099','#0000cc','#0000ff','#3333ff','#6666ff','#9999ff','#ccccff','#1a0033','#330066','#4d0099','#6600cc','#8000ff','#9933ff','#b266ff','#cc99ff','#e6ccff','#260026','#4d004d','#730073','#990099','#bf00bf','#d633d6','#e066e0','#f099f0','#f5ccf5','#33001a','#660033','#99004d','#cc0066','#ff0080','#ff3399','#ff66b2','#ff99cc','#ffccdd','#330033','#660066','#990099','#cc00cc','#ff00ff','#ff33ff','#ff66ff','#ff99ff','#ffccff','#1f1206','#3e240c','#5c3612','#7a4818','#995a1e','#b87c4a','#d1a173','#ead0b0','#000000','#1a1a1a','#333333','#4d4d4d','#666666','#808080','#999999','#b3b3b3','#cccccc','#e6e6e6','#ffffff'];
 
 let currentUser=null,allProfiles={},allMessages=[],systemMessages=[],onlineUsers={},typingUsers=[],pollInterval,typingTimeout,onlineInterval,selectedColor=COLOR_PALETTE[0],selectedImage=null,avatarMode='color',messageToDelete=null,systemMessageToDelete=null,lastMessageHash='',lastSystemHash='',replyingTo=null,userWasAtBottom=true,membersLoaded=false,localTypingUsers=new Set(),currentTheme='purple',isLoading=false,selectedImageFile=null;
 
-// Theme management
+function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
+function showError(id,msg){const el=document.getElementById(id);if(el){el.innerHTML=`<div class="error">${msg}</div>`;setTimeout(()=>el.innerHTML='',5000)}}
+function showLoading(txt='Loading...'){document.querySelector('.loading-text').textContent=txt;document.getElementById('loadingOverlay').classList.add('active')}
+function hideLoading(){document.getElementById('loadingOverlay').classList.remove('active')}
+function hashMessages(m){return JSON.stringify(m.map(x=>x.timestamp+x.username+x.message+JSON.stringify(x.reactions)))}
+function hashSystemMessages(m){return JSON.stringify(m)}
+function isAtBottom(){const el=document.getElementById('messages');return el.scrollHeight-el.scrollTop<=el.clientHeight+100}
+function scrollToBottom(force){if(force||userWasAtBottom){const el=document.getElementById('messages');el.scrollTop=el.scrollHeight;document.getElementById('newMessagesIndicator').classList.remove('show')}}
+function formatFileSize(bytes){if(bytes<1024)return bytes+' B';if(bytes<1024*1024)return(bytes/1024).toFixed(1)+' KB';return(bytes/(1024*1024)).toFixed(1)+' MB'}
+
 function setTheme(theme){
   currentTheme=theme;
   document.body.setAttribute('data-theme',theme);
@@ -506,7 +583,100 @@ document.onclick=e=>{
   }
 };
 
-// Image upload handlers
+function setupPasswordToggle(toggleId,inputId){
+  const toggle=document.getElementById(toggleId);
+  const input=document.getElementById(inputId);
+  
+  toggle.onclick=()=>{
+    if(input.type==='password'){
+      input.type='text';
+      toggle.innerHTML=`<svg viewBox="0 0 24 24">
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+      </svg>`;
+    }else{
+      input.type='password';
+      toggle.innerHTML=`<svg viewBox="0 0 24 24">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>`;
+    }
+  };
+}
+
+setupPasswordToggle('loginPasswordToggle','loginPassword');
+setupPasswordToggle('regPasswordToggle','regPassword');
+
+document.getElementById('loginTab').onclick=()=>{document.getElementById('loginTab').classList.add('active');document.getElementById('registerTab').classList.remove('active');document.getElementById('loginForm').style.display='flex';document.getElementById('registerForm').style.display='none'};
+document.getElementById('registerTab').onclick=()=>{document.getElementById('registerTab').classList.add('active');document.getElementById('loginTab').classList.remove('active');document.getElementById('registerForm').style.display='flex';document.getElementById('loginForm').style.display='none'};
+
+document.getElementById('loginUsername').onkeypress=e=>{if(e.key==='Enter')document.getElementById('loginBtn').click()};
+document.getElementById('loginPassword').onkeypress=e=>{if(e.key==='Enter')document.getElementById('loginBtn').click()};
+document.getElementById('regUsername').onkeypress=e=>{if(e.key==='Enter')document.getElementById('registerBtn').click()};
+document.getElementById('regPassword').onkeypress=e=>{if(e.key==='Enter')document.getElementById('registerBtn').click()};
+document.getElementById('regDisplayName').onkeypress=e=>{if(e.key==='Enter')document.getElementById('registerBtn').click()};
+document.getElementById('regBio').onkeypress=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('registerBtn').click()}};
+
+document.getElementById('loginBtn').onclick=async()=>{
+  const u=document.getElementById('loginUsername').value.trim(),p=document.getElementById('loginPassword').value.trim();
+  if(!u||!p)return showError('loginError','Please fill in all fields');
+  showLoading('Logging in...');
+  try{
+    const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'login',username:u,password:p})});
+    const d=await r.json();
+    if(d.status==='success'){currentUser=d.user;await showChatScreen()}else showError('loginError',d.message)
+  }catch(e){showError('loginError','Connection error')}
+  hideLoading()
+};
+
+document.getElementById('registerBtn').onclick=async()=>{
+  const u=document.getElementById('regUsername').value.trim(),p=document.getElementById('regPassword').value.trim(),n=document.getElementById('regDisplayName').value.trim(),b=document.getElementById('regBio').value.trim();
+  if(!u||!p||!n)return showError('registerError','Please fill in username, password, and display name');
+  showLoading('Creating account...');
+  try{
+    const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'register',username:u,password:p,displayName:n,bio:b})});
+    const d=await r.json();
+    if(d.status==='success'){currentUser=d.user;await showChatScreen()}else showError('registerError',d.message)
+  }catch(e){showError('registerError','Connection error')}
+  hideLoading()
+};
+
+async function showChatScreen(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('chatScreen').classList.add('active');
+  document.getElementById('headerRight').style.display='flex';
+  if(currentUser.username==='zor'){
+    document.getElementById('adminBtn').style.display='block';
+  }
+  updateHeader();
+  showLoading('Loading chat...');
+  await loadAllData();
+  hideLoading();
+  startPolling();
+  startOnlineUpdates();
+  document.getElementById('messageInput').focus();
+  scrollToBottom(true)
+}
+
+function updateHeader(){
+  const a=document.getElementById('headerAvatar'),n=document.getElementById('headerName');
+  if(currentUser.profilePic){a.style.backgroundImage=`url(${currentUser.profilePic})`;a.textContent=''}else{a.style.backgroundColor=currentUser.color;a.style.backgroundImage='none';a.textContent=currentUser.displayName.charAt(0).toUpperCase()}
+  let badge='';
+  if(currentUser.username==='zor')badge='<span class="owner-badge">OWNER</span>';
+  else if(currentUser.isMod)badge='<span class="mod-badge">MOD</span>';
+  n.innerHTML=escapeHtml(currentUser.displayName)+badge
+}
+
+document.getElementById('signOutBtn').onclick=()=>{
+  currentUser=null;allMessages=[];systemMessages=[];lastMessageHash='';lastSystemHash='';membersLoaded=false;
+  document.getElementById('chatScreen').classList.remove('active');
+  document.getElementById('authScreen').style.display='flex';
+  document.getElementById('headerRight').style.display='none';
+  document.getElementById('messages').innerHTML='';
+  if(pollInterval)clearInterval(pollInterval);
+  if(onlineInterval)clearInterval(onlineInterval)
+};
+
 document.getElementById('attachBtn').onclick=()=>document.getElementById('imageInput').click();
 document.getElementById('imageInput').onchange=handleImageSelect;
 document.getElementById('removeImagePreview').onclick=clearImagePreview;
@@ -545,12 +715,6 @@ function clearImagePreview(){
   document.getElementById('imagePreviewArea').classList.remove('show');
 }
 
-function formatFileSize(bytes){
-  if(bytes<1024)return bytes+' B';
-  if(bytes<1024*1024)return(bytes/1024).toFixed(1)+' KB';
-  return(bytes/(1024*1024)).toFixed(1)+' MB';
-}
-
 window.showFullImage=function(src){
   document.getElementById('fullSizeImage').src=src;
   document.getElementById('imageModal').classList.add('active');
@@ -565,110 +729,11 @@ window.downloadImage=function(src,username,timestamp){
   document.body.removeChild(link);
 };
 
-function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML}
-function showError(id,msg){const el=document.getElementById(id);if(el){el.innerHTML=`<div class="error">${msg}</div>`;setTimeout(()=>el.innerHTML='',5000)}}
-function showLoading(txt='Loading...'){document.querySelector('.loading-text').textContent=txt;document.getElementById('loadingOverlay').classList.add('active')}
-function hideLoading(){document.getElementById('loadingOverlay').classList.remove('active')}
-function hashMessages(m){return JSON.stringify(m.map(x=>x.timestamp+x.username+x.message+JSON.stringify(x.reactions)))}
-function hashSystemMessages(m){return JSON.stringify(m)}
-function isAtBottom(){const el=document.getElementById('messages');return el.scrollHeight-el.scrollTop<=el.clientHeight+100}
-function scrollToBottom(force){if(force||userWasAtBottom){const el=document.getElementById('messages');el.scrollTop=el.scrollHeight;document.getElementById('newMessagesIndicator').classList.remove('show')}}
-
-function setupPasswordToggle(toggleId,inputId){
-  const toggle=document.getElementById(toggleId);
-  const input=document.getElementById(inputId);
-  
-  toggle.onclick=()=>{
-    if(input.type==='password'){
-      input.type='text';
-      toggle.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-        <line x1="1" y1="1" x2="23" y2="23"></line>
-      </svg>`;
-    }else{
-      input.type='password';
-      toggle.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-        <circle cx="12" cy="12" r="3"></circle>
-      </svg>`;
-    }
-  };
-}
-
-setupPasswordToggle('loginPasswordToggle','loginPassword');
-setupPasswordToggle('regPasswordToggle','regPassword');
-
-document.getElementById('loginTab').onclick=()=>{document.getElementById('loginTab').classList.add('active');document.getElementById('registerTab').classList.remove('active');document.getElementById('loginForm').style.display='flex';document.getElementById('registerForm').style.display='none'};
-document.getElementById('registerTab').onclick=()=>{document.getElementById('registerTab').classList.add('active');document.getElementById('loginTab').classList.remove('active');document.getElementById('registerForm').style.display='flex';document.getElementById('loginForm').style.display='none'};
-
-document.getElementById('loginUsername').onkeypress=e=>{if(e.key==='Enter')document.getElementById('loginBtn').click()};
-document.getElementById('loginPassword').onkeypress=e=>{if(e.key==='Enter')document.getElementById('loginBtn').click()};
-
-document.getElementById('regUsername').onkeypress=e=>{if(e.key==='Enter')document.getElementById('registerBtn').click()};
-document.getElementById('regPassword').onkeypress=e=>{if(e.key==='Enter')document.getElementById('registerBtn').click()};
-document.getElementById('regDisplayName').onkeypress=e=>{if(e.key==='Enter')document.getElementById('registerBtn').click()};
-document.getElementById('regBio').onkeypress=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('registerBtn').click()}};
-
-document.getElementById('loginBtn').onclick=async()=>{
-  const u=document.getElementById('loginUsername').value.trim(),p=document.getElementById('loginPassword').value.trim();
-  if(!u||!p)return showError('loginError','Please fill in all fields');
-  showLoading('Logging in...');
-  try{
-    const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'login',username:u,password:p})});
-    const d=await r.json();
-    if(d.status==='success'){currentUser=d.user;await showChatScreen()}else showError('loginError',d.message)
-  }catch(e){showError('loginError','Connection error')}
-  hideLoading()
-};
-
-document.getElementById('registerBtn').onclick=async()=>{
-  const u=document.getElementById('regUsername').value.trim(),p=document.getElementById('regPassword').value.trim(),n=document.getElementById('regDisplayName').value.trim(),b=document.getElementById('regBio').value.trim();
-  if(!u||!p||!n)return showError('registerError','Please fill in username, password, and display name');
-  showLoading('Creating account...');
-  try{
-    const r=await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'register',username:u,password:p,displayName:n,bio:b})});
-    const d=await r.json();
-    if(d.status==='success'){currentUser=d.user;await showChatScreen()}else showError('registerError',d.message)
-  }catch(e){showError('registerError','Connection error')}
-  hideLoading()
-};
-
-async function showChatScreen(){
-  document.getElementById('authScreen').style.display='none';
-  document.getElementById('chatScreen').classList.add('active');
-  document.getElementById('headerRight').style.display='flex';
-  updateHeader();
-  showLoading('Loading chat...');
-  await loadAllData();
-  hideLoading();
-  startPolling();
-  startOnlineUpdates();
-  document.getElementById('messageInput').focus();
-  scrollToBottom(true)
-}
-
-function updateHeader(){
-  const a=document.getElementById('headerAvatar'),n=document.getElementById('headerName');
-  if(currentUser.profilePic){a.style.backgroundImage=`url(${currentUser.profilePic})`;a.textContent=''}else{a.style.backgroundColor=currentUser.color;a.style.backgroundImage='none';a.textContent=currentUser.displayName.charAt(0).toUpperCase()}
-  let badge='';
-  if(currentUser.username==='zor')badge='<span class="owner-badge">OWNER</span>';
-  else if(currentUser.isMod)badge='<span class="mod-badge">MOD</span>';
-  n.innerHTML=escapeHtml(currentUser.displayName)+badge
-}
-
-document.getElementById('signOutBtn').onclick=()=>{
-  currentUser=null;allMessages=[];systemMessages=[];lastMessageHash='';lastSystemHash='';membersLoaded=false;
-  document.getElementById('chatScreen').classList.remove('active');
-  document.getElementById('authScreen').style.display='flex';
-  document.getElementById('headerRight').style.display='none';
-  document.getElementById('messages').innerHTML='';
-  if(pollInterval)clearInterval(pollInterval);
-  if(onlineInterval)clearInterval(onlineInterval)
-};
-
 document.getElementById('membersBtn').onclick=()=>showMembersModal();
+document.getElementById('adminBtn').onclick=()=>showAdminPanel();
 document.getElementById('closeModal').onclick=()=>document.getElementById('profileModal').classList.remove('active');
 document.getElementById('closeMembersModal').onclick=()=>document.getElementById('membersModal').classList.remove('active');
+document.getElementById('closeAdminModal').onclick=()=>document.getElementById('adminModal').classList.remove('active');
 document.getElementById('confirmCancel').onclick=()=>{document.getElementById('confirmModal').classList.remove('active');messageToDelete=null;systemMessageToDelete=null};
 document.getElementById('confirmDelete').onclick=async()=>{
   if(messageToDelete){
@@ -846,6 +911,8 @@ async function sendImageMessage(){
     hideLoading()
   }
 }
+<!-- PART 4: JavaScript - SECOND HALF + Closing Tags -->
+<!-- Copy this and append after Part 3 -->
 
 function parseMessage(txt){
   const imageMatch=txt.match(/\[IMAGE\](.*?)\[\/IMAGE\]/);
@@ -880,7 +947,14 @@ function displayMessages(){
         case'user_joined':txt=`${m.data} joined the chat`;icon='👋';break;
         case'profile_updated':txt=`${m.data} updated their profile`;icon='✏️';break;
         case'mod_promoted':txt=`${m.data} was promoted to Moderator`;icon='⭐';break;
-        case'mod_demoted':txt=`${m.data} was demoted to Member`;icon='👤';break
+        case'mod_demoted':txt=`${m.data} was demoted to Member`;icon='👤';break;
+        case'user_banned':txt=`${m.data} was banned`;icon='🚫';break;
+        case'user_unbanned':txt=`${m.data} was unbanned`;icon='✅';break;
+        case'user_muted':txt=`${m.data} was muted`;icon='🔇';break;
+        case'user_unmuted':txt=`${m.data} was unmuted`;icon='🔊';break;
+        case'user_kicked':txt=`${m.data} was kicked`;icon='👢';break;
+        case'broadcast':txt=`📢 ${m.data}`;icon='📢';break;
+        case'messages_cleared':txt=`All messages were cleared`;icon='🗑️';break;
       }
       const el=document.createElement('div');
       el.className='message system';
@@ -927,7 +1001,7 @@ function displayMessages(){
       }
       reactionsHtml+='</div>'
     }
-    const canDelete=isOwn||currentUser.username==='zor';
+    const canDelete=isOwn||currentUser.username==='zor'||currentUser.isMod;
     el.innerHTML=`<div class="message-avatar" style="${avatarStyle}" onclick="if('${m.username}'!=='${currentUser.username}')showUserProfile('${escapeHtml(m.username)}')">${avatarText}${onlineInd}</div><div class="message-body"><div class="message-header"><span class="message-username" onclick="if('${m.username}'!=='${currentUser.username}')showUserProfile('${escapeHtml(m.username)}')">${escapeHtml(user.displayName)}</span>${badges}<span class="message-time">${time}</span></div><div class="message-content-wrapper">${replyHtml}<div class="message-content-row"><div class="message-content">${contentHtml}</div><div class="message-actions"><button class="action-btn" onclick="replyToMessage('${timestampStr}','${escapeHtml(m.username)}','${escapeHtml(parsed.type==='text'?parsed.text:parsed.caption||'[Image]').replace(/'/g,"&#39;")}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14l-5-5 5-5M4 9h10.5a5.5 5.5 0 110 11h-2"/></svg></button>${canDelete?`<button class="action-btn delete" onclick="showDeleteConfirmation('${timestampStr}','${escapeHtml(m.username)}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg></button>`:''}</div></div>${reactionsHtml}</div></div>`;
     messagesEl.appendChild(el);
     lastUser=m.username;lastTime=msgTime
@@ -1122,6 +1196,278 @@ async function saveProfile(){
   }catch(e){showError('profileError','Connection error');saveBtn.disabled=false;saveBtn.textContent='Save Changes'}
 }
 
+async function showAdminPanel(){
+  if(currentUser.username!=='zor')return;
+  document.getElementById('adminModal').classList.add('active');
+  showAdminTab('dashboard');
+}
+
+function showAdminTab(tabName){
+  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+  
+  if(tabName==='dashboard')showAdminDashboard();
+  else if(tabName==='users')showAdminUsers();
+  else if(tabName==='moderation')showAdminModeration();
+  else if(tabName==='broadcast')showAdminBroadcast();
+  else if(tabName==='settings')showAdminSettings();
+}
+
+document.querySelectorAll('.admin-tab').forEach(tab=>{
+  tab.onclick=()=>showAdminTab(tab.dataset.tab);
+});
+
+async function showAdminDashboard(){
+  showLoading('Loading stats...');
+  try{
+    const r=await fetch(SHEET_URL+'?action=getAdminStats&_='+Date.now());
+    const d=await r.json();
+    if(d.status==='success'){
+      const stats=d.stats;
+      document.getElementById('adminContent').innerHTML=`
+        <div class="admin-section active">
+          <div class="admin-stats">
+            <div class="stat-card">
+              <div class="stat-value">${stats.totalUsers}</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${stats.totalMessages}</div>
+              <div class="stat-label">Total Messages</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${stats.totalOnline}</div>
+              <div class="stat-label">Online Now</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${stats.totalModerators}</div>
+              <div class="stat-label">Moderators</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${stats.totalBanned}</div>
+              <div class="stat-label">Banned</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${stats.totalMuted}</div>
+              <div class="stat-label">Muted</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }catch(e){console.error(e)}
+  hideLoading();
+}
+
+async function showAdminUsers(){
+  await loadAllData();
+  const users=Object.values(allProfiles);
+  document.getElementById('adminContent').innerHTML=`
+    <div class="admin-section active">
+      <input type="text" class="admin-search" id="adminUserSearch" placeholder="Search users..."/>
+      <div class="admin-user-list" id="adminUserList">
+        ${users.map(user=>{
+          const isBanned=user.isBanned||false;
+          const isMuted=user.isMuted||false;
+          const canManage=user.username!=='zor';
+          return`
+            <div class="admin-user-item ${isBanned?'banned':''} ${isMuted?'muted':''}">
+              <div class="member-avatar" style="${user.profilePic?`background-image:url(${user.profilePic})`:`background-color:${user.color}`}">
+                ${user.profilePic?'':user.displayName.charAt(0).toUpperCase()}
+              </div>
+              <div class="member-info" style="flex:1">
+                <div class="member-name">${escapeHtml(user.displayName)}
+                  ${user.username==='zor'?'<span class="owner-badge">OWNER</span>':''}
+                  ${user.isMod&&user.username!=='zor'?'<span class="mod-badge">MOD</span>':''}
+                  ${isBanned?'<span style="color:#ef4444;font-size:12px;margin-left:8px">BANNED</span>':''}
+                  ${isMuted?'<span style="color:#f59e0b;font-size:12px;margin-left:8px">MUTED</span>':''}
+                </div>
+                <div class="member-username">@${escapeHtml(user.username)}</div>
+              </div>
+              ${canManage?`
+                <div class="admin-actions">
+                  ${!user.isMod?`<button class="admin-action-btn primary" onclick="adminPromoteMod('${user.username}')">Promote</button>`:`<button class="admin-action-btn warning" onclick="adminDemoteMod('${user.username}')">Demote</button>`}
+                  ${!isBanned?`<button class="admin-action-btn danger" onclick="adminBanUser('${user.username}')">Ban</button>`:`<button class="admin-action-btn success" onclick="adminUnbanUser('${user.username}')">Unban</button>`}
+                  ${!isMuted?`<button class="admin-action-btn warning" onclick="adminMuteUser('${user.username}')">Mute</button>`:`<button class="admin-action-btn info" onclick="adminUnmuteUser('${user.username}')">Unmute</button>`}
+                  <button class="admin-action-btn danger" onclick="adminKickUser('${user.username}')">Kick</button>
+                </div>
+              `:''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('adminUserSearch').oninput=e=>{
+    const search=e.target.value.toLowerCase();
+    document.querySelectorAll('.admin-user-item').forEach(item=>{
+      const text=item.textContent.toLowerCase();
+      item.style.display=text.includes(search)?'flex':'none';
+    });
+  };
+}
+
+async function showAdminModeration(){
+  document.getElementById('adminContent').innerHTML=`
+    <div class="admin-section active">
+      <h3 style="margin-bottom:15px;color:#1f2937">Moderation Tools</h3>
+      <div style="display:grid;gap:15px">
+        <div style="background:#f9fafb;padding:20px;border-radius:10px">
+          <h4 style="margin-bottom:10px;color:#1f2937">Clear All Messages</h4>
+          <p style="color:#6b7280;margin-bottom:15px;font-size:14px">Delete all chat messages. This cannot be undone.</p>
+          <button class="admin-action-btn danger" onclick="adminClearMessages()">Clear All Messages</button>
+        </div>
+        <div style="background:#f9fafb;padding:20px;border-radius:10px">
+          <h4 style="margin-bottom:10px;color:#1f2937">Clear System Messages</h4>
+          <p style="color:#6b7280;margin-bottom:15px;font-size:14px">Delete all system notifications.</p>
+          <button class="admin-action-btn danger" onclick="adminClearSystemMessages()">Clear System Messages</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function showAdminBroadcast(){
+  document.getElementById('adminContent').innerHTML=`
+    <div class="admin-section active">
+      <div class="broadcast-section">
+        <h3 style="margin-bottom:15px;color:#1f2937">Send Broadcast Message</h3>
+        <textarea id="broadcastMessage" placeholder="Type your broadcast message here..."></textarea>
+        <button class="broadcast-btn" onclick="adminSendBroadcast()">Send Broadcast</button>
+      </div>
+    </div>
+  `;
+}
+
+async function showAdminSettings(){
+  document.getElementById('adminContent').innerHTML=`
+    <div class="admin-section active">
+      <h3 style="margin-bottom:20px;color:#1f2937">Admin Settings</h3>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Enable User Registration</div>
+            <div class="setting-description">Allow new users to create accounts</div>
+          </div>
+          <div class="toggle-switch active"></div>
+        </div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Require Email Verification</div>
+            <div class="setting-description">Users must verify email before chatting</div>
+          </div>
+          <div class="toggle-switch"></div>
+        </div>
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Allow Image Uploads</div>
+            <div class="setting-description">Users can send images in chat</div>
+          </div>
+          <div class="toggle-switch active"></div>
+        </div>
+      </div>
+      <p style="margin-top:20px;color:#9ca3af;font-size:13px">Settings are currently for display only and will be functional in a future update.</p>
+    </div>
+  `;
+}
+
+window.adminPromoteMod=async function(username){
+  if(!confirm(`Promote ${username} to Moderator?`))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'promoteModerator',requestingUser:currentUser.username,targetUser:username})});
+    await loadAllData();
+    showAdminUsers();
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminDemoteMod=async function(username){
+  if(!confirm(`Demote ${username} from Moderator?`))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'demoteModerator',requestingUser:currentUser.username,targetUser:username})});
+    await loadAllData();
+    showAdminUsers();
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminBanUser=async function(username){
+  if(!confirm(`Ban ${username}? They will not be able to log in.`))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'banUser',requestingUser:currentUser.username,targetUser:username})});
+    await loadAllData();
+    showAdminUsers();
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminUnbanUser=async function(username){
+  if(!confirm(`Unban ${username}?`))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'unbanUser',requestingUser:currentUser.username,targetUser:username})});
+    await loadAllData();
+    showAdminUsers();
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminMuteUser=async function(username){
+  const duration=prompt('Mute duration in hours:','1');
+  if(!duration)return;
+  const seconds=parseFloat(duration)*3600;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'muteUser',requestingUser:currentUser.username,targetUser:username,duration:seconds})});
+    await loadAllData();
+    showAdminUsers();
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminUnmuteUser=async function(username){
+  if(!confirm(`Unmute ${username}?`))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'unmuteUser',requestingUser:currentUser.username,targetUser:username})});
+    await loadAllData();
+    showAdminUsers();
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminKickUser=async function(username){
+  if(!confirm(`Kick ${username}? They will be disconnected.`))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'kickUser',requestingUser:currentUser.username,targetUser:username})});
+    await loadAllData();
+    showAdminUsers();
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminClearMessages=async function(){
+  if(!confirm('Delete ALL messages? This cannot be undone!'))return;
+  if(!confirm('Are you ABSOLUTELY sure? All chat history will be lost!'))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'deleteAllMessages',requestingUser:currentUser.username})});
+    await loadAllData();
+    alert('All messages deleted');
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminClearSystemMessages=async function(){
+  if(!confirm('Delete all system messages?'))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'deleteAllSystemMessages',requestingUser:currentUser.username})});
+    await loadAllData();
+    alert('System messages cleared');
+  }catch(e){alert('Error: '+e)}
+};
+
+window.adminSendBroadcast=async function(){
+  const msg=document.getElementById('broadcastMessage').value.trim();
+  if(!msg)return alert('Please enter a message');
+  if(!confirm('Send this broadcast to all users?'))return;
+  try{
+    await fetch(SHEET_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'broadcastMessage',requestingUser:currentUser.username,message:msg})});
+    document.getElementById('broadcastMessage').value='';
+    await loadAllData();
+    alert('Broadcast sent!');
+  }catch(e){alert('Error: '+e)}
+};
+
 function startPolling(){
   if(pollInterval)clearInterval(pollInterval);
   pollInterval=setInterval(async()=>{
@@ -1137,3 +1483,4 @@ window.onbeforeunload=()=>{if(pollInterval)clearInterval(pollInterval);if(online
 </script>
 </body>
 </html>
+
