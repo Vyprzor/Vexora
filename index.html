@@ -1218,45 +1218,32 @@ document.querySelectorAll('.admin-tab').forEach(tab=>{
 });
 
 async function showAdminDashboard(){
-  showLoading('Loading stats...');
-  try{
-    const r=await fetch(SHEET_URL+'?action=getAdminStats&_='+Date.now());
-    const d=await r.json();
-    if(d.status==='success'){
-      const stats=d.stats;
-      document.getElementById('adminContent').innerHTML=`
-        <div class="admin-section active">
-          <div class="admin-stats">
-            <div class="stat-card">
-              <div class="stat-value">${stats.totalUsers}</div>
-              <div class="stat-label">Total Users</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${stats.totalMessages}</div>
-              <div class="stat-label">Total Messages</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${stats.totalOnline}</div>
-              <div class="stat-label">Online Now</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${stats.totalModerators}</div>
-              <div class="stat-label">Moderators</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${stats.totalBanned}</div>
-              <div class="stat-label">Banned</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">${stats.totalMuted}</div>
-              <div class="stat-label">Muted</div>
-            </div>
+  document.getElementById('adminContent').innerHTML=`
+    <div class="admin-section active">
+      <div style="text-align:center;padding:40px">
+        <h3 style="color:#1f2937;margin-bottom:15px">Admin Dashboard</h3>
+        <p style="color:#6b7280;margin-bottom:30px">Use the tabs above to manage users, moderation, broadcasts, and settings.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;max-width:800px;margin:0 auto">
+          <div style="background:#f9fafb;padding:20px;border-radius:12px;border:2px solid #e5e7eb">
+            <div style="font-size:14px;color:#6b7280;margin-bottom:5px">👥 Users</div>
+            <div style="font-size:13px;color:#9ca3af">Manage all users</div>
+          </div>
+          <div style="background:#f9fafb;padding:20px;border-radius:12px;border:2px solid #e5e7eb">
+            <div style="font-size:14px;color:#6b7280;margin-bottom:5px">🛡️ Moderation</div>
+            <div style="font-size:13px;color:#9ca3af">Clear messages</div>
+          </div>
+          <div style="background:#f9fafb;padding:20px;border-radius:12px;border:2px solid #e5e7eb">
+            <div style="font-size:14px;color:#6b7280;margin-bottom:5px">📢 Broadcast</div>
+            <div style="font-size:13px;color:#9ca3af">Send announcements</div>
+          </div>
+          <div style="background:#f9fafb;padding:20px;border-radius:12px;border:2px solid #e5e7eb">
+            <div style="font-size:14px;color:#6b7280;margin-bottom:5px">⚙️ Settings</div>
+            <div style="font-size:13px;color:#9ca3af">Configure options</div>
           </div>
         </div>
-      `;
-    }
-  }catch(e){console.error(e)}
-  hideLoading();
+      </div>
+    </div>
+  `;
 }
 
 async function showAdminUsers(){
